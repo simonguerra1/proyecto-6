@@ -9,6 +9,17 @@ const getDiscos = async (req, res, next) => {
   }
 }
 
+const getDisco = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const disco = await Disco.findById(id)
+    return res.status(200).json(disco)
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json('Error')
+  }
+}
+
 const postDisco = async (req, res, next) => {
   try {
     const newDisco = new Disco(req.body)
@@ -54,5 +65,6 @@ module.exports = {
   getDiscos,
   postDisco,
   updateDisco,
-  deleteDisco
+  deleteDisco,
+  getDisco
 }

@@ -35,17 +35,23 @@ const postTienda = async (req, res, next) => {
 const updateTienda = async (req, res, next) => {
   try {
     const { id } = req.params
+    const { name, adress, discos: nuevosDiscos } = req.body
 
-    const newTienda = new Tienda(req.body)
+    const tienda = await Tienda.findById(id)
 
-    newTienda._id = id
+    if (name) tienda.name = name
+    if (adress) tienda.adress = adress
 
-    const tiendaUpdated = await Tienda.findByIdAndUpdate(id, newTienda, {
-      new: true
+    nuevosDiscos.forEach((discoId) => {
+      if (!tienda.discos.includes(discoId)) {
+        tienda.discos.push(discoId)
+      }
     })
 
-    return res.status(200).json(tiendaUpdated)
+    const tiendaActualizada = await tienda.save()
+    return res.status(200).json(tiendaActualizada)
   } catch (error) {
+    console.log(error)
     return res.status(400).json('Error')
   }
 }
@@ -70,3 +76,18 @@ module.exports = {
   deleteTienda,
   getTienda
 }
+
+// const updateTienda = async (req, res, next) => {
+//   try {
+//     const { id } = req.params
+//     const newTienda = new Tienda(req.body)
+//     newTienda._id = id
+
+//     const tiendaUpdated = await Tienda.findByIdAndUpdate(id, newTienda, {
+//       new: true
+//     })
+//     return res.status(200).json(tiendaUpdated)
+//   } catch (error) {
+//     return res.status(400).json('Error')
+//   }
+// }
